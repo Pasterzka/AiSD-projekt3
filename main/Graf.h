@@ -30,4 +30,13 @@ public:
 
     // 2 -> liczba sk³adowych spójnoœci
     int liczbaSkladowychSpojnosci();
+
+    // 3 -> czy dwudzielny
+    bool czyDwudzielny();
+
+    // 5 -> czy planarny
+    bool czyPlanarny();
+
+    // 8 -> liczba dope³nienia krawêdzi grafu 
+    long long liczbaKrawedziDopelnienGrafu();
 };

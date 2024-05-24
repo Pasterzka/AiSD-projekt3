@@ -1,29 +1,41 @@
 #include "Graf.h"
+
 #include <iostream>
+#include "Kolejka.h"
 
 // konstruktor grafu
 Graf::Graf() {
+    //wczytanie iloœci wierzcho³ków
     std::cin >> iloscWierzcholkow;
+
+    //stworzenie tablic na podstawie iloœci wierzcho³kó
     int pomIloscWierzcholkow = (int)iloscWierzcholkow;
-    GRAF = new int* [pomIloscWierzcholkow];
     stopienWierzcholkow = new int[pomIloscWierzcholkow];
     odwiedzony = new bool[pomIloscWierzcholkow];
 
+    //stworzenie tablicy grafu
+    GRAF = new int* [pomIloscWierzcholkow];
+    
     for (int i = 0; i < iloscWierzcholkow; i++)
     {
+        //wczytanie stopnia grafu
         int stopienWiwerzcholka;
         std::cin >> stopienWiwerzcholka;
+
+        //stworzenie tablicy iloœci po³¹czeñ
         GRAF[i] = new int[stopienWiwerzcholka];
+
+        //wczytanie iloœci do tablic
         stopienWierzcholkow[i] = stopienWiwerzcholka;
+
         odwiedzony[i] = false;
         for (int k = 0; k < stopienWiwerzcholka; k++)
         {
+            //wczytanie po³¹czenia
             std::cin >> GRAF[i][k];
         }
     }
 }
-
-
 
 // zamiana elementów
 void Graf::swap(int* a, int* b) {
@@ -157,5 +169,58 @@ int Graf::liczbaSkladowychSpojnosci()
         }
     }
     return liczba;
+}
+
+bool Graf::czyDwudzielny()
+{
+    int* kolory = new int[iloscWierzcholkow];
+    for (int i = 0; i < iloscWierzcholkow; i++) kolory[i] = -1;
+
+    // Przejœcie przez wszystkie wierzcho³ki (dla przypadków niepo³¹czonych grafów)
+    for (int start = 0; start < iloscWierzcholkow; start++) {
+        if (kolory[start] == -1) {
+            // Ustawienie pocz¹tkowego wierzcho³ka na kolor 0
+            kolory[start] = 0;
+            Kolejka q(iloscWierzcholkow);
+            q.dodaj(start);
+
+            // BFS
+            while (!q.czyPusta()) {
+                int v = q.zdjemij();
+
+                // Sprawdzanie s¹siadów
+                for (int i = 0; i < stopienWierzcholkow[v]; i++) {
+                    int u = GRAF[v][i] - 1;
+                    if (kolory[u] == -1) {
+                        // Przypisanie przeciwnego koloru s¹siadowi
+                        kolory[u] = 1 - kolory[v];
+                        q.dodaj(u);
+                    }
+                    else if (kolory[u] == kolory[v]) {
+                        // Jeœli s¹siad ma ten sam kolor, graf nie jest dwudzielny
+                        delete[] kolory;
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    delete[] kolory;
+    return true;
+}
+
+long long Graf::liczbaKrawedziDopelnienGrafu()
+{
+    //wzór
+    long long liczbaDopelnienMax = iloscWierzcholkow * (iloscWierzcholkow - 1) / 2;
+    int iloscKrawedzi = 0;
+    for (int i = 0; i < iloscWierzcholkow; i++)
+    {
+        iloscKrawedzi += stopienWierzcholkow[i];
+    }
+    iloscKrawedzi = iloscKrawedzi / 2;
+    
+    return liczbaDopelnienMax - iloscKrawedzi;
 }
 

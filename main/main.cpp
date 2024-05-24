@@ -15,10 +15,18 @@ int main()
 		Graf* graf = new Graf();
 		graf->kolejnoscWierzcholkow();
 		std::cout << graf->liczbaSkladowychSpojnosci() << "\n";
-		for (int j = 0; j < 8; j++)
+		if (graf->czyDwudzielny())
+		{
+			std::cout << "T\n";
+		}
+		else {
+			std::cout << "F\n";
+		}
+		for (int j = 0; j < 6; j++)
 		{
 			std::cout << "?\n";
 		}
+		std::cout << graf->liczbaKrawedziDopelnienGrafu() << "\n";
 	}
 
 
